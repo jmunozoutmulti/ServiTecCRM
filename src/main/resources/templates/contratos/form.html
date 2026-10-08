@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Nuevo contrato')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: menu}"></nav>
+<main class="container py-4">
+	<div th:replace="~{fragments/layout :: alertas}"></div>
+	<h4 class="mb-3"><i class="bi bi-file-earmark-plus"></i> Registrar contrato</h4>
+	<form th:action="@{/contratos/guardar}" method="post">
+		<div class="card border-0 shadow-sm mb-3">
+			<div class="card-header bg-white"><strong>Datos del contrato</strong></div>
+			<div class="card-body row g-3">
+				<div class="col-md-6">
+					<label class="form-label">Cliente</label>
+					<select name="idCliente" class="form-select" required>
+						<option value="">Seleccione un cliente</option>
+						<option th:each="c : ${clientes}" th:value="${c.idCliente}" th:text="${c.numeroDocumento + ' - ' + c.razonSocial}"></option>
+					</select>
+				</div>
+				<div class="col-md-3">
+					<label class="form-label">Fecha de inicio</label>
+					<input type="date" name="fechaInicio" class="form-control" th:value="${hoy}" required>
+				</div>
+				<div class="col-md-3">
+					<label class="form-label">Duración (meses)</label>
+					<input type="number" name="meses" class="form-control" min="1" max="60" value="12" required>
+				</div>
+				<div class="col-12">
+					<label class="form-label">Observación</label>
+					<input type="text" name="observacion" class="form-control" maxlength="200">
+				</div>
+			</div>
+		</div>
+		<div class="card border-0 shadow-sm mb-3">
+			<div class="card-header bg-white"><strong>Equipos y servicios asignados</strong> <small class="text-muted">(ingrese la cantidad de cada uno)</small></div>
+			<div class="table-responsive">
+				<table class="table mb-0 align-middle">
+					<thead class="table-light">
+						<tr><th>Código</th><th>Producto</th><th>Tipo</th><th class="text-center">Stock</th><th class="text-end">Precio mensual S/</th><th style="width: 130px">Cantidad</th><th class="text-end">Subtotal S/</th></tr>
+					</thead>
+					<tbody>
+						<tr th:each="p : ${productos}">
+							<td th:text="${p.codigo}"></td>
+							<td th:text="${p.nombre}"></td>
+							<td th:text="${p.tipo}"></td>
+							<td class="text-center" th:text="${p.esEquipo()} ? ${p.stock} : '-'"></td>
+							<td class="text-end" th:text="${#numbers.formatDecimal(p.precioMensual, 1, 'COMMA', 2, 'POINT')}"></td>
+							<td>
+								<input type="hidden" name="productoId" th:value="${p.idProducto}">
+								<input type="number" name="cantidad" class="form-control form-control-sm cantidad" min="0" value="0" th:attr="data-precio=${p.precioMensual}">
+							</td>
+							<td class="text-end subtotal">0.00</td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr class="table-light">
+							<th colspan="6" class="text-end">Monto mensual del contrato S/</th>
+							<th class="text-end" id="total">0.00</th>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+		</div>
+		<button type="submit" class="btn btn-servitec"><i class="bi bi-check2-circle"></i> Registrar contrato</button>
+		<a th:href="@{/contratos}" class="btn btn-outline-secondary">Cancelar</a>
+	</form>
+</main>
+<script th:replace="~{fragments/layout :: scripts}"></script>
+<script>
+	document.querySelectorAll('.cantidad').forEach(function (input) {
+		input.addEventListener('input', calcular);
+	});
+	function calcular() {
+		var total = 0;
+		document.querySelectorAll('.cantidad').forEach(function (input) {
+			var subtotal = (parseInt(input.value) || 0) * parseFloat(input.dataset.precio);
+			input.closest('tr').querySelector('.subtotal').textContent = subtotal.toFixed(2);
+			total += subtotal;
+		});
+		document.getElementById('total').textContent = total.toFixed(2);
+	}
+</script>
+</body>
+</html>

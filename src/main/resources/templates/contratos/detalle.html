@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Detalle de contrato')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: menu}"></nav>
+<main class="container py-4">
+	<div th:replace="~{fragments/layout :: alertas}"></div>
+	<div class="d-flex justify-content-between align-items-center mb-3">
+		<h4 class="mb-0">Contrato N° <span th:text="${contrato.idContrato}"></span>
+			<span class="badge fs-6" th:classappend="${contrato.estado == 'VIGENTE'} ? 'bg-success' : (${contrato.estado == 'ANULADO'} ? 'bg-danger' : 'bg-secondary')" th:text="${contrato.estado}"></span>
+		</h4>
+		<div>
+			<form th:if="${usuarioSesion.esAdministrador() and contrato.estado == 'VIGENTE'}" th:action="@{/contratos/anular/{id}(id=${contrato.idContrato})}" method="post" class="d-inline" onsubmit="return confirm('¿Anular el contrato? Se devolverá el stock de los equipos')">
+				<button class="btn btn-outline-danger"><i class="bi bi-x-circle"></i> Anular</button>
+			</form>
+			<a th:href="@{/contratos}" class="btn btn-outline-secondary">Volver</a>
+		</div>
+	</div>
+	<div class="card border-0 shadow-sm mb-3">
+		<div class="card-body row">
+			<div class="col-md-6">
+				<p class="mb-1"><strong>Cliente:</strong> <span th:text="${contrato.cliente.razonSocial}"></span></p>
+				<p class="mb-1"><strong>Documento:</strong> <span th:text="${contrato.cliente.tipoDocumento + ' ' + contrato.cliente.numeroDocumento}"></span></p>
+				<p class="mb-1"><strong>Registrado por:</strong> <span th:text="${contrato.usuario.nombreCompleto}"></span></p>
+				<p class="mb-0"><strong>Observación:</strong> <span th:text="${contrato.observacion}"></span></p>
+			</div>
+			<div class="col-md-6">
+				<p class="mb-1"><strong>Vigencia:</strong> <span th:text="${#temporals.format(contrato.fechaInicio, 'dd/MM/yyyy') + ' al ' + #temporals.format(contrato.fechaFin, 'dd/MM/yyyy')}"></span></p>
+				<p class="mb-1"><strong>Duración:</strong> <span th:text="${contrato.meses + ' meses'}"></span></p>
+				<p class="mb-0"><strong>Monto mensual:</strong> S/ <span th:text="${#numbers.formatDecimal(contrato.montoMensual, 1, 'COMMA', 2, 'POINT')}"></span></p>
+			</div>
+		</div>
+	</div>
+	<div class="row g-3">
+		<div class="col-lg-6">
+			<div class="card border-0 shadow-sm">
+				<div class="card-header bg-white"><strong>Equipos y servicios</strong></div>
+				<table class="table mb-0">
+					<thead class="table-light"><tr><th>Producto</th><th class="text-center">Cant.</th><th class="text-end">Precio</th><th class="text-end">Subtotal</th></tr></thead>
+					<tbody>
+						<tr th:each="d : ${contrato.detalles}">
+							<td th:text="${d.producto.nombre}"></td>
+							<td class="text-center" th:text="${d.cantidad}"></td>
+							<td class="text-end" th:text="${#numbers.formatDecimal(d.precioMensual, 1, 'COMMA', 2, 'POINT')}"></td>
+							<td class="text-end" th:text="${#numbers.formatDecimal(d.subtotal, 1, 'COMMA', 2, 'POINT')}"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="col-lg-6">
+			<div class="card border-0 shadow-sm">
+				<div class="card-header bg-white"><strong>Cronograma de pagos</strong></div>
+				<table class="table mb-0 align-middle">
+					<thead class="table-light"><tr><th>N°</th><th>Vencimiento</th><th class="text-end">Monto</th><th>Estado</th><th></th></tr></thead>
+					<tbody>
+						<tr th:each="q : ${contrato.cuotas}" th:classappend="${q.vencida} ? 'table-danger'">
+							<td th:text="${q.numero}"></td>
+							<td th:text="${#temporals.format(q.fechaVencimiento, 'dd/MM/yyyy')}"></td>
+							<td class="text-end" th:text="${#numbers.formatDecimal(q.monto, 1, 'COMMA', 2, 'POINT')}"></td>
+							<td>
+								<span th:if="${q.estado == 'PAGADA'}" class="badge bg-success" th:text="'PAGADA ' + ${#temporals.format(q.fechaPago, 'dd/MM')}"></span>
+								<span th:if="${q.estado == 'PENDIENTE'}" class="badge" th:classappend="${q.vencida} ? 'bg-danger' : 'bg-warning text-dark'" th:text="${q.vencida} ? 'VENCIDA' : 'PENDIENTE'"></span>
+								<span th:if="${q.estado == 'ANULADA'}" class="badge bg-secondary">ANULADA</span>
+							</td>
+							<td>
+								<form th:if="${q.estado == 'PENDIENTE'}" th:action="@{/contratos/cuotas/{id}/pagar(id=${q.idCuota})}" method="post" onsubmit="return confirm('¿Registrar el pago de esta cuota?')">
+									<button class="btn btn-sm btn-outline-success">Pagar</button>
+								</form>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</main>
+<script th:replace="~{fragments/layout :: scripts}"></script>
+</body>
+</html>
