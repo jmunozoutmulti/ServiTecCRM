@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Estado de cuenta')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: menu}"></nav>
+<main class="container py-4">
+	<div th:replace="~{fragments/layout :: alertas}"></div>
+	<h4 class="mb-3"><i class="bi bi-search"></i> Consulta de estado de cuenta por cliente</h4>
+	<form class="row g-2 mb-4" th:action="@{/consultas/estado-cuenta}" method="get">
+		<div class="col-md-6">
+			<select name="idCliente" class="form-select" required>
+				<option value="">Seleccione un cliente</option>
+				<option th:each="c : ${clientes}" th:value="${c.idCliente}" th:text="${c.numeroDocumento + ' - ' + c.razonSocial}" th:selected="${c.idCliente == idCliente}"></option>
+			</select>
+		</div>
+		<div class="col-auto">
+			<button class="btn btn-servitec">Consultar</button>
+		</div>
+	</form>
+	<th:block th:if="${cliente != null}">
+		<div class="row g-3 mb-3">
+			<div class="col-md-6">
+				<div class="card border-0 shadow-sm h-100">
+					<div class="card-body">
+						<h5 th:text="${cliente.razonSocial}"></h5>
+						<p class="mb-1" th:text="${cliente.tipoDocumento + ' ' + cliente.numeroDocumento}"></p>
+						<p class="mb-1" th:text="'Contacto: ' + ${cliente.contacto} + ' - ' + ${cliente.telefono}"></p>
+						<p class="mb-0" th:text="'Contratos registrados: ' + ${#lists.size(contratos)}"></p>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="card tarjeta border-0 shadow-sm h-100">
+					<div class="card-body">
+						<small class="text-muted">Deuda total pendiente</small>
+						<h3 class="fw-bold" th:text="'S/ ' + ${#numbers.formatDecimal(deudaTotal, 1, 'COMMA', 2, 'POINT')}"></h3>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="card tarjeta border-0 shadow-sm h-100">
+					<div class="card-body">
+						<small class="text-muted">Deuda vencida</small>
+						<h3 class="fw-bold text-danger" th:text="'S/ ' + ${#numbers.formatDecimal(deudaVencida, 1, 'COMMA', 2, 'POINT')}"></h3>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="card border-0 shadow-sm">
+			<div class="card-header bg-white"><strong>Cuotas pendientes</strong></div>
+			<div class="table-responsive">
+				<table class="table mb-0 align-middle">
+					<thead class="table-light"><tr><th>Contrato</th><th>Cuota</th><th>Vencimiento</th><th class="text-end">Monto S/</th><th>Situación</th><th></th></tr></thead>
+					<tbody>
+						<tr th:each="q : ${pendientes}" th:classappend="${q.vencida} ? 'table-danger'">
+							<td><a th:href="@{/contratos/ver/{id}(id=${q.contrato.idContrato})}" th:text="'N° ' + ${q.contrato.idContrato}"></a></td>
+							<td th:text="${q.numero} + ' de ' + ${q.contrato.meses}"></td>
+							<td th:text="${#temporals.format(q.fechaVencimiento, 'dd/MM/yyyy')}"></td>
+							<td class="text-end" th:text="${#numbers.formatDecimal(q.monto, 1, 'COMMA', 2, 'POINT')}"></td>
+							<td><span class="badge" th:classappend="${q.vencida} ? 'bg-danger' : 'bg-warning text-dark'" th:text="${q.vencida} ? 'VENCIDA' : 'POR VENCER'"></span></td>
+							<td>
+								<form th:action="@{/contratos/cuotas/{id}/pagar(id=${q.idCuota})}" method="post" onsubmit="return confirm('¿Registrar el pago de esta cuota?')">
+									<input type="hidden" name="origen" value="estado-cuenta">
+									<button class="btn btn-sm btn-outline-success">Pagar</button>
+								</form>
+							</td>
+						</tr>
+						<tr th:if="${#lists.isEmpty(pendientes)}"><td colspan="6" class="text-center text-muted">El cliente no tiene cuotas pendientes</td></tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</th:block>
+</main>
+<script th:replace="~{fragments/layout :: scripts}"></script>
+</body>
+</html>

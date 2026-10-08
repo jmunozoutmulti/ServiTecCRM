@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Cobranzas')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: menu}"></nav>
+<main class="container py-4">
+	<h4 class="mb-3"><i class="bi bi-calendar-range"></i> Consulta de cobranzas por rango de fechas</h4>
+	<form class="row g-2 mb-4 align-items-end" th:action="@{/consultas/cobranzas}" method="get">
+		<div class="col-md-3">
+			<label class="form-label">Desde</label>
+			<input type="date" name="desde" class="form-control" th:value="${desde}" required>
+		</div>
+		<div class="col-md-3">
+			<label class="form-label">Hasta</label>
+			<input type="date" name="hasta" class="form-control" th:value="${hasta}" required>
+		</div>
+		<div class="col-md-3">
+			<label class="form-label">Estado</label>
+			<select name="estado" class="form-select">
+				<option value="PENDIENTE" th:selected="${estado == 'PENDIENTE'}">Pendientes</option>
+				<option value="PAGADA" th:selected="${estado == 'PAGADA'}">Pagadas</option>
+				<option value="TODOS" th:selected="${estado == 'TODOS'}">Todos</option>
+			</select>
+		</div>
+		<div class="col-auto">
+			<button class="btn btn-servitec">Consultar</button>
+		</div>
+	</form>
+	<div class="card border-0 shadow-sm">
+		<div class="card-header bg-white d-flex justify-content-between">
+			<strong th:text="${#lists.size(cuotas)} + ' cuotas encontradas'"></strong>
+			<strong th:text="'Total: S/ ' + ${#numbers.formatDecimal(total, 1, 'COMMA', 2, 'POINT')}"></strong>
+		</div>
+		<div class="table-responsive">
+			<table class="table table-hover mb-0 align-middle">
+				<thead class="table-light"><tr><th>Vencimiento</th><th>Cliente</th><th>Teléfono</th><th>Contrato</th><th>Cuota</th><th class="text-end">Monto S/</th><th>Estado</th></tr></thead>
+				<tbody>
+					<tr th:each="q : ${cuotas}">
+						<td th:text="${#temporals.format(q.fechaVencimiento, 'dd/MM/yyyy')}"></td>
+						<td th:text="${q.contrato.cliente.razonSocial}"></td>
+						<td th:text="${q.contrato.cliente.telefono}"></td>
+						<td><a th:href="@{/contratos/ver/{id}(id=${q.contrato.idContrato})}" th:text="'N° ' + ${q.contrato.idContrato}"></a></td>
+						<td th:text="${q.numero}"></td>
+						<td class="text-end" th:text="${#numbers.formatDecimal(q.monto, 1, 'COMMA', 2, 'POINT')}"></td>
+						<td>
+							<span th:if="${q.estado == 'PAGADA'}" class="badge bg-success">PAGADA</span>
+							<span th:if="${q.estado == 'PENDIENTE'}" class="badge" th:classappend="${q.vencida} ? 'bg-danger' : 'bg-warning text-dark'" th:text="${q.vencida} ? 'VENCIDA' : 'PENDIENTE'"></span>
+							<span th:if="${q.estado == 'ANULADA'}" class="badge bg-secondary">ANULADA</span>
+						</td>
+					</tr>
+					<tr th:if="${#lists.isEmpty(cuotas)}"><td colspan="7" class="text-center text-muted">No hay cuotas en el rango seleccionado</td></tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</main>
+<script th:replace="~{fragments/layout :: scripts}"></script>
+</body>
+</html>
