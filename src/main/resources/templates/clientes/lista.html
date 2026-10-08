@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Clientes')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: menu}"></nav>
+<main class="container py-4">
+	<div th:replace="~{fragments/layout :: alertas}"></div>
+	<div class="d-flex justify-content-between align-items-center mb-3">
+		<h4 class="mb-0"><i class="bi bi-people"></i> Clientes</h4>
+		<a th:href="@{/clientes/nuevo}" class="btn btn-servitec"><i class="bi bi-plus-lg"></i> Nuevo cliente</a>
+	</div>
+	<form class="row g-2 mb-3" th:action="@{/clientes}" method="get">
+		<div class="col-md-5">
+			<input type="text" name="q" class="form-control" placeholder="Buscar por razón social o documento" th:value="${q}">
+		</div>
+		<div class="col-auto">
+			<button class="btn btn-outline-secondary"><i class="bi bi-search"></i> Buscar</button>
+		</div>
+	</form>
+	<div class="card border-0 shadow-sm">
+		<div class="table-responsive">
+			<table class="table table-hover mb-0 align-middle">
+				<thead class="table-light">
+					<tr><th>Documento</th><th>Razón social / Nombre</th><th>Contacto</th><th>Teléfono</th><th>Correo</th><th>Estado</th><th class="text-center">Acciones</th></tr>
+				</thead>
+				<tbody>
+					<tr th:each="c : ${clientes}">
+						<td th:text="${c.tipoDocumento + ' ' + c.numeroDocumento}"></td>
+						<td th:text="${c.razonSocial}"></td>
+						<td th:text="${c.contacto}"></td>
+						<td th:text="${c.telefono}"></td>
+						<td th:text="${c.correo}"></td>
+						<td><span class="badge" th:classappend="${c.estado == 'ACTIVO'} ? 'bg-success' : 'bg-secondary'" th:text="${c.estado}"></span></td>
+						<td class="text-center text-nowrap">
+							<a th:href="@{/clientes/editar/{id}(id=${c.idCliente})}" class="btn btn-sm btn-outline-primary" title="Editar"><i class="bi bi-pencil"></i></a>
+							<a th:href="@{/clientes/estado/{id}(id=${c.idCliente})}" class="btn btn-sm btn-outline-warning" title="Activar / desactivar"><i class="bi bi-arrow-repeat"></i></a>
+							<a th:href="@{/clientes/eliminar/{id}(id=${c.idCliente})}" class="btn btn-sm btn-outline-danger" title="Eliminar" onclick="return confirm('¿Eliminar este cliente?')"><i class="bi bi-trash"></i></a>
+						</td>
+					</tr>
+					<tr th:if="${#lists.isEmpty(clientes)}"><td colspan="7" class="text-center text-muted">No se encontraron clientes</td></tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</main>
+<script th:replace="~{fragments/layout :: scripts}"></script>
+</body>
+</html>

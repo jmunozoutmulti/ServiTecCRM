@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Cliente')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: menu}"></nav>
+<main class="container py-4">
+	<div th:replace="~{fragments/layout :: alertas}"></div>
+	<h4 class="mb-3" th:text="${cliente.idCliente == null} ? 'Registrar cliente' : 'Editar cliente'"></h4>
+	<div class="card border-0 shadow-sm">
+		<div class="card-body">
+			<form th:action="@{/clientes/guardar}" th:object="${cliente}" method="post" class="row g-3">
+				<input type="hidden" th:field="*{idCliente}">
+				<div class="col-md-3">
+					<label class="form-label">Tipo de documento</label>
+					<select th:field="*{tipoDocumento}" class="form-select" required>
+						<option value="RUC">RUC</option>
+						<option value="DNI">DNI</option>
+					</select>
+				</div>
+				<div class="col-md-3">
+					<label class="form-label">Número de documento</label>
+					<input type="text" th:field="*{numeroDocumento}" class="form-control" maxlength="11" pattern="[0-9]{8,11}" title="Ingrese 8 dígitos para DNI u 11 para RUC" required th:readonly="*{idCliente != null}">
+				</div>
+				<div class="col-md-6">
+					<label class="form-label">Razón social / Nombre completo</label>
+					<input type="text" th:field="*{razonSocial}" class="form-control" maxlength="120" required>
+				</div>
+				<div class="col-md-4">
+					<label class="form-label">Persona de contacto</label>
+					<input type="text" th:field="*{contacto}" class="form-control" maxlength="100">
+				</div>
+				<div class="col-md-4">
+					<label class="form-label">Teléfono</label>
+					<input type="text" th:field="*{telefono}" class="form-control" maxlength="20">
+				</div>
+				<div class="col-md-4">
+					<label class="form-label">Correo</label>
+					<input type="email" th:field="*{correo}" class="form-control" maxlength="100">
+				</div>
+				<div class="col-12">
+					<label class="form-label">Dirección</label>
+					<input type="text" th:field="*{direccion}" class="form-control" maxlength="150">
+				</div>
+				<div class="col-12">
+					<button type="submit" class="btn btn-servitec"><i class="bi bi-save"></i> Guardar</button>
+					<a th:href="@{/clientes}" class="btn btn-outline-secondary">Cancelar</a>
+				</div>
+			</form>
+		</div>
+	</div>
+</main>
+<script th:replace="~{fragments/layout :: scripts}"></script>
+</body>
+</html>

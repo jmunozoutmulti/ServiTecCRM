@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Producto')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: menu}"></nav>
+<main class="container py-4">
+	<div th:replace="~{fragments/layout :: alertas}"></div>
+	<h4 class="mb-3" th:text="${producto.idProducto == null} ? 'Registrar producto' : 'Editar producto'"></h4>
+	<div class="card border-0 shadow-sm">
+		<div class="card-body">
+			<form th:action="@{/productos/guardar}" th:object="${producto}" method="post" class="row g-3">
+				<input type="hidden" th:field="*{idProducto}">
+				<div class="col-md-3">
+					<label class="form-label">Código</label>
+					<input type="text" th:field="*{codigo}" class="form-control" maxlength="15" required th:readonly="*{idProducto != null}">
+				</div>
+				<div class="col-md-6">
+					<label class="form-label">Nombre</label>
+					<input type="text" th:field="*{nombre}" class="form-control" maxlength="100" required>
+				</div>
+				<div class="col-md-3">
+					<label class="form-label">Tipo</label>
+					<select th:field="*{tipo}" class="form-select" required>
+						<option value="EQUIPO">EQUIPO</option>
+						<option value="SERVICIO">SERVICIO</option>
+					</select>
+				</div>
+				<div class="col-md-4">
+					<label class="form-label">Marca</label>
+					<input type="text" th:field="*{marca}" class="form-control" maxlength="50">
+				</div>
+				<div class="col-md-4">
+					<label class="form-label">Precio mensual (S/)</label>
+					<input type="number" th:field="*{precioMensual}" class="form-control" step="0.01" min="0.01" required>
+				</div>
+				<div class="col-md-4">
+					<label class="form-label">Stock disponible</label>
+					<input type="number" th:field="*{stock}" class="form-control" min="0">
+					<small class="text-muted">Solo aplica para equipos</small>
+				</div>
+				<div class="col-12">
+					<button type="submit" class="btn btn-servitec"><i class="bi bi-save"></i> Guardar</button>
+					<a th:href="@{/productos}" class="btn btn-outline-secondary">Cancelar</a>
+				</div>
+			</form>
+		</div>
+	</div>
+</main>
+<script th:replace="~{fragments/layout :: scripts}"></script>
+</body>
+</html>
