@@ -1,0 +1,36 @@
+body {
+	background-color: #f4f6f9;
+}
+
+.bg-servitec {
+	background-color: #1f3864;
+}
+
+.text-servitec {
+	color: #1f3864;
+}
+
+.btn-servitec {
+	background-color: #1f3864;
+	border-color: #1f3864;
+	color: #fff;
+}
+
+.btn-servitec:hover {
+	background-color: #2e75b6;
+	border-color: #2e75b6;
+	color: #fff;
+}
+
+.login-fondo {
+	background: linear-gradient(135deg, #1f3864, #2e75b6);
+}
+
+.tarjeta {
+	border-left: 4px solid #2e75b6 !important;
+}
+
+.table th {
+	font-weight: 600;
+	font-size: 0.9rem;
+}
