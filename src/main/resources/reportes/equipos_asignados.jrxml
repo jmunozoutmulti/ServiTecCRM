@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="equipos_asignados" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="30" bottomMargin="30" whenNoDataType="NoDataSection">
+	<style name="Base" isDefault="true" fontName="DejaVu Sans" fontSize="9">
+		<box leftPadding="4" rightPadding="4"/>
+	</style>
+	<parameter name="EMPRESA" class="java.lang.String"/>
+	<parameter name="USUARIO" class="java.lang.String"/>
+	<parameter name="FECHA" class="java.lang.String"/>
+	<parameter name="TOTAL_MENSUAL" class="java.math.BigDecimal"/>
+	<field name="razonSocial" class="java.lang.String"/>
+	<field name="idContrato" class="java.lang.Integer"/>
+	<field name="codigo" class="java.lang.String"/>
+	<field name="producto" class="java.lang.String"/>
+	<field name="tipo" class="java.lang.String"/>
+	<field name="cantidad" class="java.lang.Integer"/>
+	<field name="precioMensual" class="java.math.BigDecimal"/>
+	<field name="subtotal" class="java.math.BigDecimal"/>
+	<variable name="TOTAL_CLIENTE" class="java.math.BigDecimal" resetType="Group" resetGroup="cliente" calculation="Sum">
+		<variableExpression><![CDATA[$F{subtotal}]]></variableExpression>
+	</variable>
+	<group name="cliente">
+		<groupExpression><![CDATA[$F{razonSocial}]]></groupExpression>
+		<groupHeader>
+			<band height="24">
+				<textField>
+					<reportElement mode="Opaque" x="0" y="4" width="535" height="18" backcolor="#DDEBF7"/>
+					<textElement verticalAlignment="Middle"><font isBold="true"/></textElement>
+					<textFieldExpression><![CDATA["  Cliente: " + $F{razonSocial}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="22">
+				<staticText>
+					<reportElement x="335" y="2" width="125" height="18"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"><font isBold="true"/></textElement>
+					<text><![CDATA[Monto mensual S/]]></text>
+				</staticText>
+				<textField pattern="#,##0.00">
+					<reportElement x="460" y="2" width="75" height="18"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"><font isBold="true"/></textElement>
+					<textFieldExpression><![CDATA[$V{TOTAL_CLIENTE}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<title>
+		<band height="70">
+			<textField>
+				<reportElement x="0" y="0" width="535" height="22" forecolor="#1F3864"/>
+				<textElement textAlignment="Center">
+					<font size="15" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{EMPRESA}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="24" width="535" height="18"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Reporte de equipos y servicios asignados por cliente]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="48" width="300" height="14"/>
+				<textFieldExpression><![CDATA["Generado por: " + $P{USUARIO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="335" y="48" width="200" height="14"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Fecha: " + $P{FECHA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="22">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="55" height="22" forecolor="#FFFFFF" backcolor="#1F3864"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font isBold="true"/></textElement>
+				<text><![CDATA[Contrato]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="55" y="0" width="60" height="22" forecolor="#FFFFFF" backcolor="#1F3864"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font isBold="true"/></textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="115" y="0" width="180" height="22" forecolor="#FFFFFF" backcolor="#1F3864"/>
+				<textElement verticalAlignment="Middle"><font isBold="true"/></textElement>
+				<text><![CDATA[Equipo / servicio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="295" y="0" width="65" height="22" forecolor="#FFFFFF" backcolor="#1F3864"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font isBold="true"/></textElement>
+				<text><![CDATA[Tipo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="360" y="0" width="40" height="22" forecolor="#FFFFFF" backcolor="#1F3864"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font isBold="true"/></textElement>
+				<text><![CDATA[Cant.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="400" y="0" width="60" height="22" forecolor="#FFFFFF" backcolor="#1F3864"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"><font isBold="true"/></textElement>
+				<text><![CDATA[Precio S/]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="460" y="0" width="75" height="22" forecolor="#FFFFFF" backcolor="#1F3864"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"><font isBold="true"/></textElement>
+				<text><![CDATA[Subtotal S/]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<textField>
+				<reportElement x="0" y="0" width="55" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["N° " + $F{idContrato}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="55" y="0" width="60" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{codigo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="115" y="0" width="180" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{producto}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="295" y="0" width="65" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{tipo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="360" y="0" width="40" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="400" y="0" width="60" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{precioMensual}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="460" y="0" width="75" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{subtotal}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="19" width="535" height="1" forecolor="#D9D9D9"/>
+			</line>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="20">
+			<textField>
+				<reportElement x="435" y="4" width="100" height="14"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="250">
+			<staticText>
+				<reportElement x="295" y="8" width="165" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"><font isBold="true"/></textElement>
+				<text><![CDATA[Ingreso mensual total S/]]></text>
+			</staticText>
+			<textField pattern="#,##0.00">
+				<reportElement mode="Opaque" x="460" y="8" width="75" height="20" backcolor="#DDEBF7"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"><font isBold="true"/></textElement>
+				<textFieldExpression><![CDATA[$P{TOTAL_MENSUAL}]]></textFieldExpression>
+			</textField>
+			<barChart>
+				<chart isShowLegend="false">
+					<reportElement x="0" y="40" width="535" height="200"/>
+					<chartTitle>
+						<titleExpression><![CDATA["Monto mensual por cliente (S/)"]]></titleExpression>
+					</chartTitle>
+				</chart>
+				<categoryDataset>
+					<dataset incrementType="Group" incrementGroup="cliente"/>
+					<categorySeries>
+						<seriesExpression><![CDATA["Monto mensual"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{razonSocial}]]></categoryExpression>
+						<valueExpression><![CDATA[$V{TOTAL_CLIENTE}]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<barPlot>
+					<plot>
+						<seriesColor seriesOrder="0" color="#2E75B6"/>
+					</plot>
+					<itemLabel/>
+					<categoryAxisFormat>
+						<axisFormat/>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat/>
+					</valueAxisFormat>
+				</barPlot>
+			</barChart>
+		</band>
+	</summary>
+	<noData>
+		<band height="30">
+			<staticText>
+				<reportElement x="0" y="5" width="535" height="20"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[No existen contratos vigentes]]></text>
+			</staticText>
+		</band>
+	</noData>
+</jasperReport>

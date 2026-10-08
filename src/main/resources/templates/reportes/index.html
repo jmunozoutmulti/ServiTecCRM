@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Reportes')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: menu}"></nav>
+<main class="container py-4">
+	<h4 class="mb-4"><i class="bi bi-file-earmark-pdf"></i> Reportes</h4>
+	<div class="row g-3">
+		<div class="col-md-6">
+			<div class="card border-0 shadow-sm h-100">
+				<div class="card-body">
+					<h5>Deudas pendientes por cliente</h5>
+					<p class="text-muted">Lista los clientes con cuotas pendientes, la cantidad de cuotas, el próximo vencimiento y el monto total por cobrar.</p>
+					<a th:href="@{/reportes/deudas}" target="_blank" class="btn btn-servitec"><i class="bi bi-filetype-pdf"></i> Generar PDF</a>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="card border-0 shadow-sm h-100">
+				<div class="card-body">
+					<h5>Equipos y servicios asignados</h5>
+					<p class="text-muted">Muestra los equipos y servicios de los contratos vigentes agrupados por cliente, con el monto mensual y un gráfico resumen.</p>
+					<a th:href="@{/reportes/equipos}" target="_blank" class="btn btn-servitec"><i class="bi bi-filetype-pdf"></i> Generar PDF</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+<script th:replace="~{fragments/layout :: scripts}"></script>
+</body>
+</html>
